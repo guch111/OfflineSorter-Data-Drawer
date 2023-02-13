@@ -75,7 +75,6 @@ def m_filt_plt_win(con_obj: List[Continuous], win, path):
     win_l = win[1]-win[0]
     ch_n = len(con_obj)
     sample_rate = int(con_obj[0].SamplingRate)
-    x = np.linspace(0, win_l, win_l*sample_rate)
     fig = plt.figure(figsize=(1.5*win_l,ch_n))
     ax = plt.axes()
     ax.yaxis.set_major_locator(ticker.FixedLocator(np.linspace(0, 0.25*(ch_n-1), ch_n)))
@@ -85,7 +84,9 @@ def m_filt_plt_win(con_obj: List[Continuous], win, path):
     for i in ['top', 'right', 'bottom', 'left']:
         ax.spines[i].set_visible(False)
     for i in range(ch_n):
-        plt.plot(x, con_obj[i].Values[win[0]*sample_rate:win[1]*sample_rate]+0.25*i, lw = 0.5, c='black')
+        y = con_obj[i].Values[win[0]*sample_rate:win[1]*sample_rate]+i*0.25
+        x = np.linspace(0, len(y)/sample_rate, len(y))
+        plt.plot(x, y, lw = 0.5, c='black')
     plt.plot([win_l+0.2 for _ in range(2)], [-0.1,0], lw=5, c='black')
     plt.text(win_l+0.3, -0.05, '100μV', verticalalignment='center')
     plt.plot([win_l-0.3, win_l+0.2], [-0.15,-0.15], lw=5, c='black')
@@ -112,14 +113,14 @@ def s_con_plt_win(con_obj: List[Continuous], con_obj_pre: List[Continuous], win,
     win_l = win[1]-win[0]
     sample_rate = int(con_obj[0].SamplingRate)
     fig_num = len(con_obj) 
-    x = np.linspace(win[0], win[1], win_l*sample_rate)
     fig, ax = plt.subplots(2,1,figsize=(15,3))
     for n in range(fig_num):
         ax[0].axis('off')
         ax[1].axis('off')
         plt.subplot(211)
-        plt.plot(x, con_obj_pre[n].Values[win[0]*sample_rate:win[1]*sample_rate],
-                    lw = 0.5, c='black')
+        y = con_obj_pre[n].Values[win[0]*sample_rate:win[1]*sample_rate]
+        x = np.linspace(win[0], win[0]+len(y)/sample_rate, len(y))
+        plt.plot(x, y, lw = 0.5, c='black')
         plt.plot([win[1]+0.1, win[1]+0.1], [-0.1,0.1], lw=5, c='black')
         plt.text(win[1]+0.15, 0, '200μV', verticalalignment='center')
         plt.xlim(win[0], win[1]+0.2)
@@ -131,7 +132,7 @@ def s_con_plt_win(con_obj: List[Continuous], con_obj_pre: List[Continuous], win,
         plt.plot([win[1]+0.1, win[1]+0.1], [-0.05,0.05], lw=5, c='black')
         plt.text(win[1]+0.15, 0, '100μV', verticalalignment='center')
         plt.xlim(win[0], win[1]+0.2)
-        plt.savefig(os.path.join(path, '%d-%d of %s.png'%(win[0],win[1], con_obj[n].Name)))
+        plt.savefig(os.path.join(path, '%s %d-%dseconds.png'%(con_obj[n].Name,win[0],win[1])))
     plt.close(fig)
 
 def s_con_plt(con_obj: List[Continuous], con_obj_pre: List[Continuous], cfg):
