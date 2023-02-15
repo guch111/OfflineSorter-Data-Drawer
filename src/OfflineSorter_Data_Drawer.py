@@ -2,6 +2,7 @@ import os
 import re
 import json
 import math
+import csv
 
 from NexFileData import *
 import NexFileReaders
@@ -193,11 +194,9 @@ def s_raster_plt(wave_obj: List[Waveform], color, data_len, path):
     ax.yaxis.set_major_formatter(ticker.FuncFormatter(raster_ylabel))
     for i in ['top', 'right', 'bottom', 'left']:
         ax.spines[i].set_visible(False)
-    n = 0
-    for w in wave_obj:
-        for t in w.Timestamps:
-            plt.scatter(t, n*0.2, marker='|', c=color_encode(int(r_list[n]), int(g_list[n]), int(b_list[n])))
-        n += 1
+    for n in range(len(wave_obj)):
+        plt.scatter(wave_obj[n].Timestamps, [n*0.2 for _ in range(len(wave_obj[n].Timestamps))], 
+                    marker='|', c=color_encode(int(r_list[n]), int(g_list[n]), int(b_list[n])))
     plt.xlim(-1.5, data_len) 
     plt.ylim(-0.2, len(wave_obj)*0.2)
     plt.plot([data_len-10, data_len], [-0.2,-0.2], lw='5', c='black')
@@ -237,6 +236,15 @@ def firing_rate_plt(wave_obj: List[Waveform], cfg):
                     rate[i] = d[i+math.floor(cfg['firing_rate_win']/2)]/((cfg['data_len']-i-1)
                                 +cfg['firing_rate_win']/2+0.5)
         data.append(rate)
+    
+    if cfg['firing_rate_export']:
+        name_r = ['time'] + [w.Name for w in wave_obj]
+        with open (os.path.join(fig_dir, 'firing_rate.csv'), 'w', newline="") as csv_f:
+            csv_w = csv.writer(csv_f)
+            csv_w.writerow(name_r)
+            for i in range(len(data[0])):
+                d = [i+0.5] + [t[i] for t in data]
+                csv_w.writerow(d)
 
     fig = plt.figure(figsize=(15, 0.2*len(wave_obj)))
     ax = plt.axes()
