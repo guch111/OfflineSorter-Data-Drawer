@@ -157,11 +157,12 @@ def s_unit_plt(wave_obj: List[Waveform], cfg):
 
     n = 0
     for w in wave_obj:
-        x = np.arange(0, 1000/w.SamplingRate*w.NumPointsWave, 1000/w.SamplingRate)
+        x = np.linspace(0, w.NumPointsWave*1000/w.SamplingRate, w.NumPointsWave)
         for d in w.Values:
             plt.plot(x, d, lw=0.5, c='lightgrey')
         mean_w = w.Values.mean(axis=0)
         plt.plot(x, mean_w, lw = 10, c=cfg['s_unit_color'][n%len(cfg['s_unit_color'])])
+        plt.ylim(-0.15,0.1)
         plt.title(w.Name)
         plt.savefig(os.path.join(fig_dir, '%s.png'%(w.Name)))
         plt.clf()
@@ -277,15 +278,15 @@ def run():
             return
 
     plot_obj = get_ch(cfg)
-    if cfg['m_filt_en'] and cfg['m_filt_ch']:
+    if cfg['m_filt_en'] and plot_obj['m_filt_obj']:
         m_filt_plt(plot_obj['m_filt_obj'], cfg)
-    if cfg['s_unit_en'] and cfg['s_unit_ch']:
+    if cfg['s_unit_en'] and plot_obj['s_unit_obj']:
         s_unit_plt(plot_obj['s_unit_obj'], cfg)
-    if cfg['raster_en'] and cfg['raster_ch']:
+    if cfg['raster_en'] and plot_obj['raster_obj'][0]:
         raster_plt(plot_obj['raster_obj'], cfg)
-    if cfg['firing_rate_en'] and cfg['firing_rate_ch']:
+    if cfg['firing_rate_en'] and plot_obj['firing_rate_obj']:
         firing_rate_plt(plot_obj['firing_rate_obj'], cfg)
-    if cfg['s_con_en'] and cfg['s_con_ch']:
+    if cfg['s_con_en'] and plot_obj['s_con_obj']:
         s_con_plt(plot_obj['s_con_obj'], plot_obj['s_con_obj_pre'], cfg)
 
     showinfo(title = "", message = "Complete") 
