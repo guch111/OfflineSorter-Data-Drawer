@@ -12,6 +12,7 @@
     "s_unit_en":            1,
     "s_unit_color":         ["#be0000", "#1e3660", "#7d6100"],
     "s_unit_ch":            [19,25,101,103,126],
+    "ax_range":             [[0,1.6],[-0.15,0.1]],
 
     "raster_en":            1,
     "raster_color":         [["#c86b30", "#e07fdf"], 
