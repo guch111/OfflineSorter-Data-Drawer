@@ -163,7 +163,7 @@ def s_unit_plt(wave_obj: List[Waveform], cfg):
             plt.plot(x, d, lw=0.5, c='lightgrey')
         mean_w = w.Values.mean(axis=0)
         plt.plot(x, mean_w, lw = 10, c=cfg['s_unit_color'][n%len(cfg['s_unit_color'])])
-        plt.xlim(ax_range[0][1], ax_range[0][1])
+        plt.xlim(ax_range[0][0], ax_range[0][1])
         plt.ylim(ax_range[1][0], ax_range[1][1])
         plt.title(w.Name)
         plt.savefig(os.path.join(fig_dir, '%s.png'%(w.Name)))
