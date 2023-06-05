@@ -134,6 +134,9 @@ def s_con_plt_win(con_obj: List[Continuous], con_obj_pre: List[Continuous], win,
         plt.text(win[1]+0.15, 0, '100μV', verticalalignment='center')
         plt.xlim(win[0], win[1]+0.2)
         plt.savefig(os.path.join(path, '%s %d-%dseconds.png'%(con_obj[n].Name,win[0],win[1])))
+        plt.cla()
+        plt.subplot(211)
+        plt.cla()
     plt.close(fig)
 
 def s_con_plt(con_obj: List[Continuous], con_obj_pre: List[Continuous], cfg):
@@ -306,7 +309,7 @@ def pre_data_select():
 
 if __name__ == "__main__":
     root = tk.Tk()
-    root.title('OfflineSorter Data Drawer V1')
+    root.title('OfflineSorter Data Drawer V1.1')
     sw = root.winfo_screenwidth()
     sh = root.winfo_screenheight()
     x = (sw-390) / 2
